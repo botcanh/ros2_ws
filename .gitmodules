@@ -1,0 +1,3 @@
+[submodule "DC_motors"]
+	path = DC_motors
+	url = git@github.com:botcanh/DC_motors.git
