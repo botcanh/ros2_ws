@@ -128,6 +128,7 @@ class Esp32BridgeNode(Node):
                 if not raw:
                     continue
                 line = raw.decode(errors='ignore').strip()
+                self.get_logger().info(f'[RAW] {line}')
                 if not line.startswith('E:'):
                     continue
 

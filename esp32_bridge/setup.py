@@ -20,6 +20,7 @@ setup(
     entry_points={
         'console_scripts': [
             'bridge_node = esp32_bridge.bridge_node:main',
+            'odom_node   = esp32_bridge.odom_node:main',
         ],
     },
 )
