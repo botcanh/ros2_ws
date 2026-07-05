@@ -23,8 +23,8 @@ from tf2_ros import TransformBroadcaster
 
 # ── Kinematics — fill in your actual robot values ─────────────────────────
 TICKS_PER_REV  = 1440.0   # TODO: encoder CPR × gear ratio (same as ESP32)
-WHEEL_RADIUS_M = 0.05     # TODO: metres
-WHEEL_BASE_M   = 0.20     # TODO: metres, left-to-right wheel distance
+WHEEL_RADIUS_M = 0.05    # TODO: metres
+WHEEL_BASE_M   = 0.21     # TODO: metres, left-to-right wheel distance
 
 # ── Frame IDs ─────────────────────────────────────────────────────────────
 ODOM_FRAME      = 'odom'
