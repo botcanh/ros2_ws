@@ -12,6 +12,7 @@
   <exec_depend>esp32_bridge</exec_depend>
   <exec_depend>hclidar_driver_ros2</exec_depend>
   <exec_depend>ros2launch</exec_depend>
+  <exec_depend>rosbridge_server</exec_depend>
 
   <export>
     <build_type>ament_cmake</build_type>

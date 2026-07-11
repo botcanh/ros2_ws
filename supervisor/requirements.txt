@@ -1,0 +1,4 @@
+# Prefer apt on Raspberry Pi OS: sudo apt install python3-fastapi python3-uvicorn python3-psutil
+fastapi
+uvicorn
+psutil

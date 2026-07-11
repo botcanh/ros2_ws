@@ -1,0 +1,22 @@
+# AMR Supervisor systemd unit.
+# Install (see supervisor/README.md):
+#   1. Edit User= and the path in WorkingDirectory/ExecStart to match your Pi user.
+#   2. sudo cp amr-supervisor.service /etc/systemd/system/
+#   3. sudo systemctl daemon-reload && sudo systemctl enable --now amr-supervisor
+
+[Unit]
+Description=AMR Supervisor HTTP API (docker + launch control)
+After=network-online.target docker.service
+Wants=network-online.target
+Requires=docker.service
+
+[Service]
+User=pi
+EnvironmentFile=/etc/amr-supervisor.env
+WorkingDirectory=/home/pi/ros2_ws/src/supervisor
+ExecStart=/usr/bin/python3 -m uvicorn supervisor:app --host 0.0.0.0 --port 8000
+Restart=on-failure
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target
