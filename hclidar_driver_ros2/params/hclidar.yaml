@@ -1,0 +1,24 @@
+hclidar_driver_ros2_node:
+  ros__parameters:
+    frame_id: "laser_frame"
+    lidar_model: "X2M"
+    port: "/dev/ttyUSB1"
+    ignore_array: ""
+    baudrate: 115200
+    lidar_type: 1
+    device_type: 0
+    sample_rate: 9
+    abnormal_check_count: 4
+    resolution_fixed: true
+    reversion: true
+    inverted: true
+    auto_reconnect: true
+    isSingleChannel: false
+    intensity: false
+    support_motor_dtr: false
+    angle_max: 3.1415926
+    angle_min: -3.1415926
+    range_max: 64.0
+    range_min: 0.01
+    frequency: 10.0
+    invalid_range_is_inf: false
