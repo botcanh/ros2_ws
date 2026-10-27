@@ -22,7 +22,7 @@ from geometry_msgs.msg import TransformStamped
 from tf2_ros import TransformBroadcaster
 
 # ── Kinematics — fill in your actual robot values ─────────────────────────
-TICKS_PER_REV  = 1440.0   # TODO: encoder CPR × gear ratio (same as ESP32)
+TICKS_PER_REV  = 1320.0   # 11 PPR x4 quadrature x 1:30 gearbox (same as ESP32 main.cpp)
 WHEEL_RADIUS_M = 0.05    # TODO: metres
 WHEEL_BASE_M   = 0.21     # TODO: metres, left-to-right wheel distance
 

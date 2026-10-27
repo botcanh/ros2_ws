@@ -42,7 +42,15 @@ def generate_launch_description():
                 'rosbridge_websocket_launch.xml',
             )
         ),
-        launch_arguments={'port': '9090'}.items(),
+        # The web app calls services that may not be up yet (map_server while
+        # Nav2 starts, nav cancel in MANUAL). With the defaults such a call
+        # blocks rosbridge's main thread forever and freezes every topic.
+        launch_arguments={
+            'port': '9090',
+            'call_services_in_new_thread': 'true',
+            'default_call_service_timeout': '5.0',
+            'send_action_goals_in_new_thread': 'true',
+        }.items(),
     )
 
     return LaunchDescription([

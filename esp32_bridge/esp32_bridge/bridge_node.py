@@ -31,8 +31,8 @@ except ImportError:
 # ── Differential-drive kinematics ─────────────────────────────────────────
 # TODO: replace with your actual robot measurements
 WHEEL_RADIUS_M = 0.05   # metres, radius of each wheel
-WHEEL_BASE_M   = 0.20   # metres, distance between left and right wheels
-MAX_RPM        = 100.0  # absolute RPM limit sent to ESP32
+WHEEL_BASE_M   = 0.21   # metres, distance between left and right wheels (match odom_node.py)
+MAX_RPM        = 200.0  # absolute RPM limit sent to ESP32 (measured max ~257 at PWM 255, less on ground)
 
 # ── Serial port ───────────────────────────────────────────────────────────
 SERIAL_PORT = '/dev/ttyUSB0'

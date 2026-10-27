@@ -1,8 +1,25 @@
 # AMR Supervisor — Pi Setup Guide
 
-Always-on HTTP API on the Pi host (port **8000**) that the Windows control app
-uses to turn the robot system on/off. Works together with **rosbridge**
-(port **9090**, inside the container) which carries live ROS data.
+Always-on HTTP API on the Pi host (port **8000**) that turns the robot system
+on/off and switches modes. It also serves the **browser control app** (`web/`).
+Works together with **rosbridge** (port **9090**, inside the container) which
+carries live ROS data.
+
+## Control app (laptop)
+
+Open **`http://<PI_IP>:8000/?key=<AMR_API_KEY>`** in any browser on the same
+network (the key is remembered after the first visit; change it later with
+"API key…"). No install needed on the laptop.
+
+| Mode | What runs | What you can do |
+|------|-----------|-----------------|
+| Power ON / MANUAL | `stack` (bridge, lidar, odom, rosbridge) | drive with joystick or W/A/S/D, see cmd_vel + odom + laser |
+| MAPPING | `stack` + `slam` | drive, watch the live map, **Save map** as `name` or `folder/name` → `~/ros2_ws/src/maps/` |
+| AUTO | `stack` + `nav` (map_server, amcl, Nav2) | pick a map → **Load**, **Set initial pose**, **Set goal**, Cancel |
+
+E-STOP (top right) cancels any Nav2 goal and sends zero velocity. Touching the
+drive controls in AUTO also cancels the active goal. Releasing the joystick /
+keys (or closing the tab) stops the robot within 0.5 s (bridge timeout).
 
 Everything below runs **on the Raspberry Pi**.
 
@@ -57,7 +74,7 @@ EOF
 sudo chmod 600 /etc/amr-supervisor.env
 ```
 
-You will enter this same key in the Windows app settings.
+You will enter this same key in the control app (or pass it once as `?key=`).
 
 ## 6) Install the systemd service
 
@@ -129,7 +146,11 @@ All endpoints except `/ping` require header `X-API-Key: <key>`.
 | POST   | `/launch/slam`       | `ros2 launch amr_common slam.launch.py`           |
 | POST   | `/launch/nav`        | nav launch; JSON body `{"map": "..."}` optional   |
 | POST   | `/launch/{name}/stop`| Stop that launch (SIGINT, then SIGKILL)           |
-| GET    | `/logs/{name}?lines=100` | Tail of that launch's log file                |
+| POST   | `/mode`              | `{"mode": "off|manual|mapping|auto", "map": "name"}` — starts/stops launches to reach that mode |
+| GET    | `/maps`              | Maps under `~/ros2_ws/src/maps` (`name` = path without `.yaml`) |
+| POST   | `/maps/save`         | `{"name": "lab/floor1", "overwrite": false}` — map_saver_cli while SLAM runs |
+| GET    | `/logs/{name}?lines=100` | Tail of that launch's log file (rewritten on each start) |
+| GET    | `/`                  | Redirects to the control app (`/app/`, no key needed to load it) |
 
 Launch output is written to `supervisor/logs/<name>.log` (visible from both
 host and container via the bind mount).

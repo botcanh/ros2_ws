@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AGV Control</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">AGV Control</div>
+  <div class="lights">
+    <span class="light" id="lightApi" title="Supervisor (port 8000)">API</span>
+    <span class="light" id="lightRos" title="rosbridge (port 9090)">ROS</span>
+  </div>
+  <div class="power">
+    <button id="btnPowerOn" class="btn">Power ON</button>
+    <button id="btnPowerOff" class="btn btn-ghost">Power OFF</button>
+  </div>
+  <nav class="tabs" id="modeTabs">
+    <button data-mode="manual">MANUAL</button>
+    <button data-mode="mapping">MAPPING</button>
+    <button data-mode="auto">AUTO</button>
+  </nav>
+  <div class="modeinfo"><span id="modeLabel">—</span><span id="busy" class="busy" hidden>working…</span></div>
+  <div class="host" id="hostInfo"></div>
+  <button id="btnEstop" class="estop">E-STOP</button>
+</header>
+
+<main class="layout">
+  <section class="mapwrap">
+    <canvas id="map"></canvas>
+    <div class="maptools">
+      <button id="btnFit" class="btn btn-small btn-ghost" title="Fit map to view">Fit</button>
+      <label class="chk"><input type="checkbox" id="chkFollow"> Follow robot</label>
+      <span class="toolsep"></span>
+      <button id="btnInitPose" class="btn btn-small tool" data-tool="initpose" hidden>Set initial pose</button>
+      <button id="btnGoal" class="btn btn-small tool" data-tool="goal" hidden>Set goal</button>
+      <span id="toolHint" class="hint"></span>
+    </div>
+    <div class="maplegend" id="frameLabel">frame: odom</div>
+  </section>
+
+  <aside class="side">
+    <div class="card">
+      <h3>Speed command <small>/cmd_vel</small></h3>
+      <div class="kv"><span>linear.x</span><b id="cmdV">0.00</b><i>m/s</i></div>
+      <div class="kv"><span>angular.z</span><b id="cmdW">0.00</b><i>rad/s</i></div>
+    </div>
+    <div class="card">
+      <h3>Odometry <small>/odom</small></h3>
+      <div class="kv"><span>x</span><b id="odX">0.00</b><i>m</i></div>
+      <div class="kv"><span>y</span><b id="odY">0.00</b><i>m</i></div>
+      <div class="kv"><span>yaw</span><b id="odYaw">0.0</b><i>deg</i></div>
+      <div class="kv"><span>v</span><b id="odV">0.00</b><i>m/s</i></div>
+      <div class="kv"><span>ω</span><b id="odW">0.00</b><i>rad/s</i></div>
+      <canvas id="chartV" class="chart" height="70"></canvas>
+      <canvas id="chartW" class="chart" height="70"></canvas>
+      <div class="legend"><span class="sw sw-cmd"></span>command <span class="sw sw-odom"></span>odom</div>
+    </div>
+
+    <div class="card">
+      <h3>Drive</h3>
+      <p id="driveWarn" class="warnline" hidden></p>
+      <div class="drive">
+        <div id="joy" class="joy"><div id="joyKnob" class="knob"></div></div>
+        <div class="drivecfg">
+          <label>Max linear <b id="maxVLabel">0.20</b> m/s
+            <input type="range" id="maxV" min="0.05" max="0.20" step="0.01" value="0.15"></label>
+          <label>Max angular <b id="maxWLabel">0.80</b> rad/s
+            <input type="range" id="maxW" min="0.2" max="0.8" step="0.05" value="0.6"></label>
+          <p class="hint">Keys: W/S forward/back, A/D turn (or arrows). Space = stop.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" id="panelMapping" hidden>
+      <h3>Mapping</h3>
+      <p class="hint">Drive slowly around the area. Check that walls are sharp and don't double up before saving.</p>
+      <label class="field">Save as <small>(saved in ~/ros2_ws/src/maps/, subfolders allowed)</small>
+        <input type="text" id="mapName" placeholder="e.g. lab/floor1"></label>
+      <button id="btnSaveMap" class="btn">Save map</button>
+      <div id="saveResult" class="result"></div>
+      <h4>Saved maps</h4>
+      <ul id="mapListMapping" class="maplist"></ul>
+    </div>
+
+    <div class="card" id="panelAuto" hidden>
+      <h3>Autonomous</h3>
+      <label class="field">Map
+        <select id="mapSelect"></select></label>
+      <button id="btnLoadMap" class="btn">Load map &amp; start Nav2</button>
+      <div class="kv"><span>loaded</span><b id="loadedMap">—</b></div>
+      <div class="kv"><span>nav</span><b id="navStatus">idle</b></div>
+      <p class="hint">1. Set initial pose: click the robot's position on the map and drag toward where it faces. The laser points should line up with the walls.<br>
+        2. Set goal: click and drag the same way.</p>
+      <button id="btnCancel" class="btn btn-ghost">Cancel goal</button>
+    </div>
+
+    <div class="card">
+      <h3>Logs</h3>
+      <div class="row">
+        <select id="logSelect"><option>stack</option><option>slam</option><option>nav</option></select>
+        <button id="btnLogs" class="btn btn-small btn-ghost">Show</button>
+        <button id="btnKey" class="btn btn-small btn-ghost">API key…</button>
+      </div>
+      <pre id="logView" class="logview" hidden></pre>
+    </div>
+  </aside>
+</main>
+
+<div id="toast" class="toast" hidden></div>
+
+<script src="roslib.min.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
